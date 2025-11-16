@@ -2,6 +2,19 @@ name: room-post-koromaru
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '30 0 * * *'   # 09:30 JST ダイエット健康①
+    - cron: '30 1 * * *'   # 10:30 JST レディースファッション
+    - cron: '30 2 * * *'   # 11:30 JST 美容コスメ①
+    - cron: '30 3 * * *'   # 12:30 JST 季節キーワード
+    - cron: '30 4 * * *'   # 13:30 JST キッズベビー①
+    - cron: '30 6 * * *'   # 15:30 JST ダイエット健康②
+    - cron: '30 8 * * *'   # 17:30 JST キッズベビー②
+    - cron: '30 9 * * *'   # 18:30 JST 美容コスメ②
+    - cron: '30 11 * * *'  # 20:30 JST バッグ
+    - cron: '30 12 * * *'  # 21:30 JST ペット
+    - cron: '30 13 * * *'  # 22:30 JST スイーツ
+    - cron: '30 14 * * *'  # 23:30 JST インナー下着
 
 jobs:
   run-room-post:
