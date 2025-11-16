@@ -25,6 +25,12 @@ jobs:
           cache: 'npm'
           cache-dependency-path: room-automation/package-lock.json
 
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: room-automation/node_modules
+          key: ${{ runner.os }}-node-22-${{ hashFiles('room-automation/package-lock.json') }}
+
       - name: Create .env.koromaru from secret
         run: |
           cd room-automation
@@ -33,7 +39,12 @@ jobs:
       - name: Install dependencies
         run: |
           cd room-automation
-          npm install
+          if [ -d node_modules ]; then
+            echo "✅ node_modules cache found → npm install スキップ"
+          else
+            echo "⬇️ node_modules cache なし → npm install 実行"
+            npm install
+          fi
 
       - name: Run room-post (koromaru / genre 100939)
         run: |
