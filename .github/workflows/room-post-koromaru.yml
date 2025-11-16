@@ -45,7 +45,20 @@ jobs:
             echo "⬇️ node_modules cache なし → npm install 実行"
             npm install
           fi
+          
+      - name: Cache Puppeteer browser
+        id: cache-puppeteer
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/puppeteer
+          key: ${{ runner.os }}-puppeteer-${{ hashFiles('room-automation/package-lock.json') }}
 
+      - name: Install Chrome for Puppeteer (if needed)
+        if: steps.cache-puppeteer.outputs.cache-hit != 'true'
+        run: |
+          cd room-automation
+          npx puppeteer browsers install chrome
+          
       - name: Run room-post (koromaru / genre 100939)
         run: |
           cd room-automation
