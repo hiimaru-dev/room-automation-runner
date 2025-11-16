@@ -79,14 +79,14 @@ jobs:
             npm install
           fi
           
-      # 6) room-post を実行（ひーまる）
-      - name: Run room-post (hiimaru / genre 100939)
+      # 6) room-post を実行（ひーまる / 時間ベースでジャンル決定）
+      - name: Run room-post (hiimaru / time-based genre)
         run: |
           cd room-automation
 
           # エラーでも一旦止めない
           set +e
-          npx ts-node -r dotenv/config src/services/room-post/index.ts genre 100939
+          npx ts-node -r dotenv/config src/services/room-post/index.ts
           EXIT_CODE=$?
 
           echo "room-post exited with code ${EXIT_CODE}"
