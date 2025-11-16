@@ -70,10 +70,10 @@ jobs:
 
           # 3) posted-hiimaru / posted-koromaru
           if [ -f session/posted-hiimaru.json ]; then
-            git add session/posted-hiimaru.json
+            git add -f session/posted-hiimaru.json
           fi
           if [ -f session/posted-koromaru.json ]; then
-            git add session/posted-koromaru.json
+            git add -f session/posted-koromaru.json
           fi
 
           # 何もステージされていなければ終了
