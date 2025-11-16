@@ -72,12 +72,12 @@ jobs:
           cd room-automation
           npx puppeteer browsers install chrome
           
-      - name: Run room-post (koromaru / genre 100939)
+      - name: Run room-post (koromaru / time-based genre)
         run: |
           cd room-automation
 
           set +e
-          npx ts-node -r dotenv/config src/services/room-post/index.ts genre 100939
+          npx ts-node -r dotenv/config src/services/room-post/index.ts
           EXIT_CODE=$?
 
           echo "room-post exited with code ${EXIT_CODE}"
