@@ -33,7 +33,7 @@ jobs:
       - name: Create .env.koromaru from secret
         run: |
           cd room-automation
-          printf '%s\n' "${ENV_KOROMARU}" > .env.koromaru
+          printf '%s\n' "${{ secrets.ENV_KOROMARU }}" > .env.koromaru
         env:
           ENV_HIIMARU: ${{ secrets.ENV_HIIMARU }}
 
