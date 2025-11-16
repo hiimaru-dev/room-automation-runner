@@ -1,0 +1,107 @@
+name: room-post-koromaru
+
+on:
+  # まずは手動実行のみ
+  workflow_dispatch:
+
+jobs:
+  run-room-post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      # 1) runner リポ自体をチェックアウト（ほぼ何もしないけどお作法として）
+      - name: Checkout runner repo
+        uses: actions/checkout@v4
+
+      # 2) PAT を使って private room-automation を clone
+      - name: Clone private room-automation
+        run: |
+          git clone https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+
+      # 3) Node.js 22 をセットアップ
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: room-automation/package-lock.json
+
+      # 4) .env.hiimaru を Secret から生成
+      - name: Create .env.koromaru from secret
+        run: |
+          cd room-automation
+          printf '%s\n' "${ENV_KOROMARU}" > .env.koromaru
+        env:
+          ENV_HIIMARU: ${{ secrets.ENV_HIIMARU }}
+
+      # 5) 依存パッケージをインストール
+      - name: Install dependencies
+        run: |
+          cd room-automation
+          npm install
+
+      # 6) room-post を実行（ローカルと同じコマンド）
+      - name: Run room-post (koromaru / genre 100939)
+        run: |
+          cd room-automation
+
+          # デフォルトの "set -e" を解除（エラーでも止まらないように）
+          set +e
+
+          # 実際の処理を実行
+          npx ts-node -r dotenv/config src/services/room-post/index.ts genre 100939
+          EXIT_CODE=$?
+
+          echo "room-post exited with code ${EXIT_CODE}"
+
+          # 0 と 2 は「業務上は成功」とみなす
+          if [ "$EXIT_CODE" != "0" ] && [ "$EXIT_CODE" != "2" ]; then
+            echo "room-post failed (exit code=${EXIT_CODE})"
+            exit "$EXIT_CODE"
+          fi
+        env:
+          NODE_ENV: production
+          DOTENV_CONFIG_PATH: .env.koromaru
+
+      # 7) 実行後に JSON ログだけを private repo に commit & push
+      - name: Commit & push JSON logs
+        run: |
+          cd room-automation
+
+          # 念のため origin に PAT 付き URL を設定
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
+
+          # 1) x-beauty-post の tips 系
+          if ls src/services/x-beauty-post/data/*.json >/dev/null 2>&1; then
+            git add src/services/x-beauty-post/data/*.json
+          fi
+
+          # 2) last_room_id.json
+          if [ -f src/services/room-post/data/last_room_id.json ]; then
+            git add src/services/room-post/data/last_room_id.json
+          fi
+
+          # 3) posted-hiimaru / posted-koromaru
+          if [ -f session/posted-hiimaru.json ]; then
+            git add -f session/posted-hiimaru.json
+          fi
+          if [ -f session/posted-koromaru.json ]; then
+            git add -f session/posted-koromaru.json
+          fi
+
+          # 何もステージされていなければ終了
+          if git diff --cached --quiet; then
+            echo "No JSON changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git commit -m "chore: update runtime json logs (GitHub Actions)"
+          git push origin main
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
