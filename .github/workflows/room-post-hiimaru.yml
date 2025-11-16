@@ -36,6 +36,21 @@ jobs:
           path: room-automation/node_modules
           key: ${{ runner.os }}-node-22-${{ hashFiles('room-automation/package-lock.json') }}
 
+      # 3.7) Cache Puppeteer browser (Chrome)
+      - name: Cache Puppeteer browser
+        id: cache-puppeteer
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/puppeteer
+          key: ${{ runner.os }}-puppeteer-${{ hashFiles('room-automation/package-lock.json') }}
+
+      # 3.8) Install Chrome for Puppeteer if cache miss
+      - name: Install Chrome for Puppeteer (if needed)
+        if: steps.cache-puppeteer.outputs.cache-hit != 'true'
+        run: |
+          cd room-automation
+          npx puppeteer browsers install chrome
+
       # 4) .env.hiimaru を Secret から生成
       - name: Create .env.hiimaru from secret
         run: |
