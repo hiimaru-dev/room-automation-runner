@@ -29,6 +29,13 @@ jobs:
           cache: 'npm'
           cache-dependency-path: room-automation/package-lock.json
 
+      # 3.5) node_modules をキャッシュ
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: room-automation/node_modules
+          key: ${{ runner.os }}-node-22-${{ hashFiles('room-automation/package-lock.json') }}
+
       # 4) .env.hiimaru を Secret から生成
       - name: Create .env.hiimaru from secret
         run: |
@@ -39,8 +46,13 @@ jobs:
       - name: Install dependencies
         run: |
           cd room-automation
-          npm install
-
+          if [ -d node_modules ]; then
+            echo "✅ node_modules cache found → npm install スキップ"
+          else
+            echo "⬇️ node_modules cache なし → npm install 実行"
+            npm install
+          fi
+          
       # 6) room-post を実行（ひーまる）
       - name: Run room-post (hiimaru / genre 100939)
         run: |
