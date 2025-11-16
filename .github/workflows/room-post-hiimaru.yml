@@ -26,12 +26,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: room-automation/package-lock.json
 
       # 4) .env.hiimaru を Secret から生成
       - name: Create .env.hiimaru from secret
         run: |
           cd room-automation
-          printf '%s\n' "${ENV_HIIMARU}" > .env.hiimaru
+          printf '%s\n' "${{ secrets.ENV_HIIMARU }}" > .env.hiimaru
         env:
           ENV_HIIMARU: ${{ secrets.ENV_HIIMARU }}
 
