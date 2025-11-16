@@ -45,7 +45,21 @@ jobs:
       - name: Run room-post (hiimaru / genre 100939)
         run: |
           cd room-automation
+
+          # デフォルトの "set -e" を解除（エラーでも止まらないように）
+          set +e
+
+          # 実際の処理を実行
           npx ts-node -r dotenv/config src/services/room-post/index.ts genre 100939
+          EXIT_CODE=$?
+
+          echo "room-post exited with code ${EXIT_CODE}"
+
+          # 0 と 2 は「業務上は成功」とみなす
+          if [ "$EXIT_CODE" != "0" ] && [ "$EXIT_CODE" != "2" ]; then
+            echo "room-post failed (exit code=${EXIT_CODE})"
+            exit "$EXIT_CODE"
+          fi
         env:
           NODE_ENV: production
           DOTENV_CONFIG_PATH: .env.hiimaru
