@@ -115,6 +115,11 @@ jobs:
             git add -f session/posted-koromaru.json
           fi
 
+          # 🔐 暗号化クッキー（hiimaru / koromaru 共通で拾う）
+          if ls session/rakuten_cookie_*.enc >/dev/null 2>&1; then
+            git add -f session/rakuten_cookie_*.enc
+          fi
+
           # 何も変化がなければ終わり
           if git diff --cached --quiet; then
             echo "No JSON changes to commit."
