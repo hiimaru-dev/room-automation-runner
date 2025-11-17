@@ -1,0 +1,130 @@
+name: room-post-koromaru-seasonal
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 12:30 JST に季節キーワード投稿（UTC 03:30）
+    - cron: '30 3 * * *'
+
+jobs:
+  run-room-post-seasonal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      # 1) runner リポをチェックアウト
+      - name: Checkout runner repo
+        uses: actions/checkout@v4
+
+      # 2) PAT を使って private room-automation を clone
+      - name: Clone private room-automation
+        run: |
+          git clone https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+
+      # 3) Node.js + npm キャッシュ
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: room-automation/package-lock.json
+
+      # 3.5) node_modules をキャッシュ
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: room-automation/node_modules
+          key: ${{ runner.os }}-node-22-${{ hashFiles('room-automation/package-lock.json') }}
+
+      # 3.7) Puppeteer のブラウザキャッシュ
+      - name: Cache Puppeteer browser
+        id: cache-puppeteer
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/puppeteer
+          key: ${{ runner.os }}-puppeteer-${{ hashFiles('room-automation/package-lock.json') }}
+
+      # 3.8) Puppeteer 用 Chrome が無ければインストール
+      - name: Install Chrome for Puppeteer (if needed)
+        if: steps.cache-puppeteer.outputs.cache-hit != 'true'
+        run: |
+          cd room-automation
+          npx puppeteer browsers install chrome
+
+      # 4) .env.koromaru を Secret から生成
+      - name: Create .env.koromaru from secret
+        run: |
+          cd room-automation
+          printf '%s\n' "${{ secrets.ENV_KOROMARU }}" > .env.koromaru
+
+      # 5) 依存パッケージをインストール
+      - name: Install dependencies
+        run: |
+          cd room-automation
+          if [ -d node_modules ]; then
+            echo "✅ node_modules cache found → npm install スキップ"
+          else
+            echo "⬇️ node_modules cache なし → npm install 実行"
+            npm install
+          fi
+
+      # 6) 季節キーワード投稿を実行
+      - name: Run seasonal room-post (koromaru)
+        run: |
+          cd room-automation
+
+          set +e
+          npx ts-node -r dotenv/config src/services/room-post/index.ts seasonal
+          EXIT_CODE=$?
+
+          echo "room-post (seasonal) exited with code ${EXIT_CODE}"
+
+          # 0 と 2 は成功扱い（投稿0件=2）
+          if [ "$EXIT_CODE" != "0" ] && [ "$EXIT_CODE" != "2" ]; then
+            echo "room-post seasonal failed (exit code=${EXIT_CODE})"
+            exit "$EXIT_CODE"
+          fi
+        env:
+          NODE_ENV: production
+          DOTENV_CONFIG_PATH: .env.koromaru
+
+      # 7) 実行後に JSON ログだけを private repo に commit & push
+      - name: Commit & push JSON logs
+        run: |
+          cd room-automation
+
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
+
+          # x-beauty-post の tips 系
+          if ls src/services/x-beauty-post/data/*.json >/dev/null 2>&1; then
+            git add src/services/x-beauty-post/data/*.json
+          fi
+
+          # last_room_id.json
+          if [ -f src/services/room-post/data/last_room_id.json ]; then
+            git add src/services/room-post/data/last_room_id.json
+          fi
+
+          # posted-hiimaru / posted-koromaru
+          if [ -f session/posted-hiimaru.json ]; then
+            git add -f session/posted-hiimaru.json
+          fi
+          if [ -f session/posted-koromaru.json ]; then
+            git add -f session/posted-koromaru.json
+          fi
+
+          # 何も変化がなければ終わり
+          if git diff --cached --quiet; then
+            echo "No JSON changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git commit -m "chore: update runtime json logs (koromaru seasonal)"
+          git push origin main
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
