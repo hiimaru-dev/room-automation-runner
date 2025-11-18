@@ -1,0 +1,91 @@
+name: auto-like-koromaru
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 0:30 JST いいね①
+    - cron: "30 15 * * *"
+    # 1:30 JST いいね②
+    - cron: "30 16 * * *"
+    # 5:00 JST いいね③
+    - cron: "0 20 * * *"
+    # 7:30 JST いいね④
+    - cron: "30 22 * * *"
+    # 14:00 JST いいね⑥
+    - cron: "0 5 * * *"
+    # 16:00 JST いいね⑤
+    - cron: "0 7 * * *"
+
+jobs:
+  run-auto-like:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout runner repo
+        uses: actions/checkout@v4
+
+      - name: Clone private room-automation
+        run: |
+          git clone https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: room-automation/package-lock.json
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: room-automation/node_modules
+          key: ${{ runner.os }}-node-22-${{ hashFiles('room-automation/package-lock.json') }}
+
+      - name: Cache Puppeteer browser
+        id: cache-puppeteer
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/puppeteer
+          key: ${{ runner.os }}-puppeteer-${{ hashFiles('room-automation/package-lock.json') }}
+
+      - name: Install Chrome for Puppeteer (if needed)
+        if: steps.cache-puppeteer.outputs.cache-hit != 'true'
+        run: |
+          cd room-automation
+          npx puppeteer browsers install chrome
+
+      - name: Create .env.koromaru from secret
+        run: |
+          cd room-automation
+          printf '%s\n' "${{ secrets.ENV_KOROMARU }}" > .env.koromaru
+
+      - name: Install dependencies
+        run: |
+          cd room-automation
+          if [ -d node_modules ]; then
+            echo "✅ node_modules cache found → npm install スキップ"
+          else
+            echo "⬇️ node_modules cache なし → npm install 実行"
+            npm install
+          fi
+
+      - name: Run auto-like (koromaru)
+        run: |
+          cd room-automation
+          set +e
+
+          echo "▶ auto-like START (koromaru)"
+          npx ts-node -r dotenv/config src/services/auto-like/index.ts
+          EXIT_CODE=$?
+          echo "auto-like exited with code ${EXIT_CODE}"
+
+          if [ "$EXIT_CODE" != "0" ] && [ "$EXIT_CODE" != "2" ]; then
+            echo "auto-like failed (exit code=${EXIT_CODE})"
+            exit "$EXIT_CODE"
+          fi
+        env:
+          NODE_ENV: production
+          DOTENV_CONFIG_PATH: .env.koromaru
