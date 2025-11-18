@@ -110,6 +110,7 @@ jobs:
         env:
           NODE_ENV: production
           DOTENV_CONFIG_PATH: .env.hiimaru
+          ROOM_TIME_CRON: ${{ github.event.schedule }}  # ★追加
 
       # 7) 実行後に JSON ログだけを private repo に commit & push
       - name: Commit & push JSON logs
