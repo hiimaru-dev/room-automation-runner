@@ -35,7 +35,7 @@ jobs:
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
           NODE_ENV: production
-          DOTENV_CONFIG_PATH: .env.hiimaru（or .env.koromaru）
+          DOTENV_CONFIG_PATH: .env.hiimaru（or .env.hiimaru）
           ROOM_TIME_CRON: ${{ github.event.schedule }}
 
       - name: Setup Node.js
