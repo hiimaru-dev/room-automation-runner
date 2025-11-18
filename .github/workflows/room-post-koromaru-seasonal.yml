@@ -1,5 +1,9 @@
 name: room-post-koromaru-seasonal
 
+concurrency:
+  group: room-automation-logs
+  cancel-in-progress: false
+
 on:
   workflow_dispatch:
   schedule:
