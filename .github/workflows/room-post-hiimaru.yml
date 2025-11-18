@@ -33,7 +33,7 @@ on:
 jobs:
   run-room-post:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 50
 
     steps:
       # 1) runner リポ自体をチェックアウト
