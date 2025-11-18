@@ -29,7 +29,9 @@ jobs:
         run: |
           git clone https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
         env:
-          GH_PAT: ${{ secrets.GH_PAT }}
+          NODE_ENV: production
+          DOTENV_CONFIG_PATH: .env.hiimaru
+          ROOM_TIME_CRON: ${{ github.event.schedule }}  # ★追加
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
