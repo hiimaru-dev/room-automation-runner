@@ -88,6 +88,7 @@ jobs:
         env:
           NODE_ENV: production
           DOTENV_CONFIG_PATH: .env.koromaru
+          ROOM_TIME_CRON: ${{ github.event.schedule }}  # ★追加
 
       - name: Commit & push JSON logs
         run: |
