@@ -85,6 +85,10 @@ jobs:
       # 7) X 用 JSON / cookie ログなどを commit & push
       - name: Commit & push JSON logs
         run: |
+
+          echo "⏭️ x-beauty-post skipped manually (exit 0)"
+          exit 0
+          
           cd room-automation
 
           git remote set-url origin https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
