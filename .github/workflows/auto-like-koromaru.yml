@@ -3,7 +3,7 @@ name: auto-like-koromaru
 concurrency:
   group: room-automation-logs
   cancel-in-progress: false
-  
+
 on:
   workflow_dispatch:
   schedule:
@@ -29,14 +29,12 @@ jobs:
       - name: Checkout runner repo
         uses: actions/checkout@v4
 
+      # ▼ only GH_PAT here
       - name: Clone private room-automation
         run: |
           git clone https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
-          NODE_ENV: production
-          DOTENV_CONFIG_PATH: .env.hiimaru（or .env.koromaru）
-          ROOM_TIME_CRON: ${{ github.event.schedule }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
