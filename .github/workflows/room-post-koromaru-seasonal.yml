@@ -8,12 +8,12 @@ on:
   workflow_dispatch:
   schedule:
     # 12:30 JST に季節キーワード投稿（UTC 03:30）
-    - cron: '30 3 * * *'
+    - cron: "30 3 * * *"
 
 jobs:
   run-room-post-seasonal:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
 
     steps:
       # 1) runner リポをチェックアウト
@@ -31,8 +31,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "22"
+          cache: "npm"
           cache-dependency-path: room-automation/package-lock.json
 
       # 3.5) node_modules をキャッシュ
