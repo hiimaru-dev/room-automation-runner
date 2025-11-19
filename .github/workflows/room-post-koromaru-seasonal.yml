@@ -94,7 +94,7 @@ jobs:
           NODE_ENV: production
           DOTENV_CONFIG_PATH: .env.koromaru
 
-      # 7) 実行後に JSON ログだけを private repo に commit & push
+      # 7) 実行後に JSON / cookie ログを private repo に commit & push
       - name: Commit & push JSON logs
         run: |
           cd room-automation
