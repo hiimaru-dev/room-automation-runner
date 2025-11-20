@@ -1,24 +1,24 @@
 name: auto-follow-hiimaru
 
 concurrency:
-  group: room-automation-logs
+  group: room-automation-hiimaru
   cancel-in-progress: false
 
 on:
   workflow_dispatch:
-  schedule:
+  # schedule:
     # 0:00 JST フォロー①
-    - cron: "0 15 * * *"
+    # - cron: "0 15 * * *"
     # 2:00 JST フォロー②
-    - cron: "0 17 * * *"
+    # - cron: "0 17 * * *"
     # 3:00 JST フォロー③
-    - cron: "0 18 * * *"
+    # - cron: "0 18 * * *"
     # 5:30 JST フォロー④
-    - cron: "30 20 * * *"
+    # - cron: "30 20 * * *"
     # 8:00 JST フォロー⑤
-    - cron: "0 23 * * *"
+    # - cron: "0 23 * * *"
     # 18:00 JST フォロー⑥
-    - cron: "0 9 * * *"
+    # - cron: "0 9 * * *"
 
 jobs:
   run-auto-follow:
