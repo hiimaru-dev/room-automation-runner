@@ -6,19 +6,19 @@ concurrency:
 
 on:
   workflow_dispatch:
-  schedule:
+  # schedule:
     # 0:30 JST いいね①
-    - cron: "30 15 * * *"
+    # - cron: "30 15 * * *"
     # 1:30 JST いいね②
-    - cron: "30 16 * * *"
+    # - cron: "30 16 * * *"
     # 5:00 JST いいね③
-    - cron: "0 20 * * *"
+    # - cron: "0 20 * * *"
     # 7:30 JST いいね④
-    - cron: "30 22 * * *"
+    # - cron: "30 22 * * *"
     # 14:00 JST いいね⑥
-    - cron: "0 5 * * *"
+    # - cron: "0 5 * * *"
     # 16:00 JST いいね⑤
-    - cron: "0 7 * * *"
+    # - cron: "0 7 * * *"
 
 jobs:
   run-auto-like:
