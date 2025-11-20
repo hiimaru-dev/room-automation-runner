@@ -1,7 +1,7 @@
 name: auto-like-koromaru
 
 concurrency:
-  group: room-automation-logs
+  group: room-automation-koromaru
   cancel-in-progress: false
 
 on:
