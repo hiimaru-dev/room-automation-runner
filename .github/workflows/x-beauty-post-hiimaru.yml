@@ -2,7 +2,7 @@ name: x-beauty-post-hiimaru
 
 # 他の JSON push と競合しないように共通グループに入れる
 concurrency:
-  group: room-automation-logs
+  group: room-automation-hiimaru
   cancel-in-progress: false
 
 on:
@@ -85,15 +85,12 @@ jobs:
       # 7) X 用 JSON / cookie ログなどを commit & push
       - name: Commit & push JSON logs
         run: |
-
-          echo "⏭️ x-beauty-post skipped manually (exit 0)"
-          exit 0
-          
           cd room-automation
 
+          # GitHub Actions 用の認証付きリモートを設定
           git remote set-url origin https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
 
-          # x-beauty-post のデータ類
+          # x-beauty-post のデータ類を追加
           if ls src/services/x-beauty-post/data/*.json >/dev/null 2>&1; then
             git add src/services/x-beauty-post/data/*.json
           fi
@@ -109,6 +106,7 @@ jobs:
             git add -f session/rakuten_cookie_*.enc
           fi
 
+          # 何も変化がなければ commit/push せず終了
           if git diff --cached --quiet; then
             echo "No JSON/COOKIE changes to commit."
             exit 0
