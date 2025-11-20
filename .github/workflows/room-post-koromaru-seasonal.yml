@@ -6,9 +6,9 @@ concurrency:
 
 on:
   workflow_dispatch:
-  schedule:
+  # schedule:
     # 12:30 JST に季節キーワード投稿（UTC 03:30）
-    - cron: "30 3 * * *"
+    # - cron: "30 3 * * *"
 
 jobs:
   run-room-post-seasonal:
