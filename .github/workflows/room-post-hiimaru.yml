@@ -6,29 +6,29 @@ concurrency:
   
 on:
   workflow_dispatch:
-  schedule:
+  # schedule:
     # 07:00 JST ダイエット健康①
-    - cron: '0 22 * * *'
+    # - cron: '0 22 * * *'
     # 09:00 JST インナー下着
-    - cron: '0 0 * * *'
+    # - cron: '0 0 * * *'
     # 11:00 JST キッズベビー①
-    - cron: '0 2 * * *'
+    # - cron: '0 2 * * *'
     # 12:00 JST 水ソフトドリンク
-    - cron: '0 3 * * *'
+    # - cron: '0 3 * * *'
     # 13:00 JST 美容コスメ①
-    - cron: '0 4 * * *'
+    # - cron: '0 4 * * *'
     # 15:00 JST ダイエット健康②
-    - cron: '0 6 * * *'
+    # - cron: '0 6 * * *'
     # 17:00 JST キッズベビー②
-    - cron: '0 8 * * *'
+    # - cron: '0 8 * * *'
     # 19:00 JST ジュエリー
-    - cron: '0 10 * * *'
+    # - cron: '0 10 * * *'
     # 20:00 JST レディースファッション
-    - cron: '0 11 * * *'
+    # - cron: '0 11 * * *'
     # 21:00 JST バッグ
-    - cron: '0 12 * * *'
+    # - cron: '0 12 * * *'
     # 22:00 JST 美容コスメ②
-    - cron: '0 13 * * *'
+    # - cron: '0 13 * * *'
 
 jobs:
   run-room-post:
