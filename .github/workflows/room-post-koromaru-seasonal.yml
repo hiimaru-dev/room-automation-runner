@@ -1,7 +1,7 @@
 name: room-post-koromaru-seasonal
 
 concurrency:
-  group: room-automation-logs
+  group: room-automation-koromaru
   cancel-in-progress: false
 
 on:
