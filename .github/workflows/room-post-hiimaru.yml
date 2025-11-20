@@ -1,7 +1,7 @@
 name: room-post-hiimaru
 
 concurrency:
-  group: room-automation-logs
+  group: room-automation-hiimaru
   cancel-in-progress: false
   
 on:
