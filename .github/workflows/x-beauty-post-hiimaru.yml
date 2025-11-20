@@ -7,10 +7,10 @@ concurrency:
 
 on:
   workflow_dispatch:
-  schedule:
+  # schedule:
     # 毎日 6:00 JST に1回実行
     # 6:00 JST = 前日 21:00 UTC
-    - cron: "0 21 * * *"
+    # - cron: "0 21 * * *"
 
 jobs:
   run-x-beauty-post:
