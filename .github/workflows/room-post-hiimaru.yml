@@ -30,6 +30,7 @@ on:
     # 21:00 JST バッグ
     # - cron: '0 12 * * *'
     # 22:00 JST 美容コスメ②
+    # - cron: '0 13 * * *'
 
 jobs:
   run-room-post:
