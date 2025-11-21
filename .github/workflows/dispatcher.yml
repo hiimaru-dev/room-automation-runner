@@ -48,40 +48,64 @@ jobs:
         run: |
           echo "Time slot = $SLOT"
 
-          # === 6:00 ===
+          dispatch() {
+            local workflow_file="$1"
+            echo "  -> dispatch $workflow_file"
+            curl -sS -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -H "Content-Type: application/json" \
+              -d '{"ref":"main"}' \
+              "https://api.github.com/repos/hiimaru-dev/room-automation/actions/workflows/${workflow_file}/dispatches"
+          }
+
+          # === 6:00 JST ===
           if [ "$SLOT" = "6:00" ]; then
-            echo "Dispatching for 6:00"
-            curl -X POST \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              -d '{"ref":"main"}' \
-              https://api.github.com/repos/hiimaru-dev/room-automation/actions/workflows/x-beauty-post-hiimaru.yml/dispatches
-
-            curl -X POST \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              -d '{"ref":"main"}' \
-              https://api.github.com/repos/hiimaru-dev/room-automation/actions/workflows/auto-follow-koromaru.yml/dispatches
-
+            echo "Dispatching for 6:00 (H: Xポスト / K: フォロー①)"
+            dispatch "x-beauty-post-hiimaru.yml"      # ひーまる Xポスト
+            dispatch "auto-follow-koromaru.yml"       # ころまる フォロー①
             exit 0
           fi
 
-          # === 6:30 ===
+          # === 6:30 JST ===
           if [ "$SLOT" = "6:30" ]; then
-            echo "Dispatching for 6:30"
-            curl -X POST \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              -d '{"ref":"main"}' \
-              https://api.github.com/repos/hiimaru-dev/room-automation/actions/workflows/auto-follow-hiimaru.yml/dispatches
+            echo "Dispatching for 6:30 (H: フォロー① / K: いいね①)"
+            dispatch "auto-follow-hiimaru.yml"        # ひーまる フォロー①
+            dispatch "auto-like-koromaru.yml"         # ころまる いいね①
+            exit 0
+          fi
 
-            curl -X POST \
-              -H "Authorization: Bearer $GH_TOKEN" \
-              -H "Accept: application/vnd.github+json" \
-              -d '{"ref":"main"}' \
-              https://api.github.com/repos/hiimaru-dev/room-automation/actions/workflows/auto-like-koromaru.yml/dispatches
+          # === 7:00 JST ===
+          if [ "$SLOT" = "7:00" ]; then
+            echo "Dispatching for 7:00 (H: 美容コスメ① / K: フォロー②)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる 美容コスメ①
+            dispatch "auto-follow-koromaru.yml"       # ころまる フォロー②（同じWFでOK）
+            exit 0
+          fi
 
+          # === 7:30 JST ===
+          if [ "$SLOT" = "7:30" ]; then
+            echo "Dispatching for 7:30 (H: いいね① / K: 美容コスメ①)"
+            dispatch "auto-like-hiimaru.yml"          # ひーまる いいね①
+            dispatch "room-post-koromaru.yml"         # ころまる 美容コスメ①
+            exit 0
+          fi
+
+          # === 8:00 JST ===
+          if [ "$SLOT" = "8:00" ]; then
+            echo "Dispatching for 8:00 (H: ダイエット① / K: フォロー③)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる ダイエット①
+            dispatch "auto-follow-koromaru.yml"       # ころまる フォロー③
+            exit 0
+          fi
+
+          # === 8:30 JST ===
+          if [ "$SLOT" = "8:30" ]; then
+            echo "Dispatching for 8:30 (H: フォロー② / K: ダイエット①)"
+            dispatch "auto-follow-hiimaru.yml"        # ひーまる フォロー②
+            dispatch "room-post-koromaru.yml"         # ころまる ダイエット①
             exit 0
           fi
 
           echo "No job for slot $SLOT"
+  
