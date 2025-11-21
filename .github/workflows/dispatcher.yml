@@ -1,0 +1,38 @@
+name: dispatcher
+
+on:
+  # cron-job.org から叩くのはこれだけ
+  workflow_dispatch:
+
+jobs:
+  compute-time-slot:
+    runs-on: ubuntu-latest
+    outputs:
+      time_slot: ${{ steps.time.outputs.time_slot }}
+      jst_now: ${{ steps.time.outputs.jst_now }}
+    steps:
+      - name: Compute JST time slot (30min unit)
+        id: time
+        run: |
+          # ランナーは UTC なので、Asia/Tokyo にして現在時刻を取得
+          export TZ=Asia/Tokyo
+          H=$(date +'%H')
+          M=$(date +'%M')
+
+          # 00〜29分 → :00 スロット、30〜59分 → :30 スロット
+          if [ "$M" -lt 30 ]; then
+            SLOT_MIN="00"
+          else
+            SLOT_MIN="30"
+          fi
+
+          # 先頭の 0 は削る（"06:00" → "6:00" にしたい）
+          H_NOZERO=$(echo "$H" | sed 's/^0//')
+
+          SLOT="${H_NOZERO}:${SLOT_MIN}"
+
+          echo "time_slot=$SLOT" >> "$GITHUB_OUTPUT"
+          echo "jst_now=${H}:${M}" >> "$GITHUB_OUTPUT"
+
+          echo "JST now = ${H}:${M}"
+          echo "Time slot = ${SLOT}"
