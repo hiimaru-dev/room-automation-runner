@@ -36,3 +36,52 @@ jobs:
 
           echo "JST now = ${H}:${M}"
           echo "Time slot = ${SLOT}"
+          
+  dispatch-jobs:
+    needs: compute-time-slot
+    runs-on: ubuntu-latest
+    steps:
+      - name: Decide and dispatch workflows
+        env:
+          SLOT: ${{ needs.compute-time-slot.outputs.time_slot }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Time slot = $SLOT"
+
+          # === 6:00 ===
+          if [ "$SLOT" = "6:00" ]; then
+            echo "Dispatching for 6:00"
+            curl -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -d '{"ref":"main"}' \
+              https://api.github.com/repos/hiimaru-dev/room-automation/actions/workflows/x-beauty-post-hiimaru.yml/dispatches
+
+            curl -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -d '{"ref":"main"}' \
+              https://api.github.com/repos/hiimaru-dev/room-automation/actions/workflows/auto-follow-koromaru.yml/dispatches
+
+            exit 0
+          fi
+
+          # === 6:30 ===
+          if [ "$SLOT" = "6:30" ]; then
+            echo "Dispatching for 6:30"
+            curl -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -d '{"ref":"main"}' \
+              https://api.github.com/repos/hiimaru-dev/room-automation/actions/workflows/auto-follow-hiimaru.yml/dispatches
+
+            curl -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H "Accept: application/vnd.github+json" \
+              -d '{"ref":"main"}' \
+              https://api.github.com/repos/hiimaru-dev/room-automation/actions/workflows/auto-like-koromaru.yml/dispatches
+
+            exit 0
+          fi
+
+          echo "No job for slot $SLOT"
