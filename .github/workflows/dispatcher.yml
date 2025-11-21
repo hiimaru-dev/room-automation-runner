@@ -108,5 +108,189 @@ jobs:
             exit 0
           fi
 
+          # === 9:00 JST ===
+          if [ "$SLOT" = "9:00" ]; then
+            echo "Dispatching for 9:00 (H: インナー下着 / K: いいね②)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる インナー下着
+            dispatch "auto-like-koromaru.yml"         # ころまる いいね②
+            exit 0
+          fi
+
+          # === 9:30 JST ===
+          if [ "$SLOT" = "9:30" ]; then
+            echo "Dispatching for 9:30 (H: いいね② / K: レディースファッション)"
+            dispatch "auto-like-hiimaru.yml"          # ひーまる いいね②
+            dispatch "room-post-koromaru.yml"         # ころまる レディースファッション
+            exit 0
+          fi
+
+          # === 10:00 JST ===
+          if [ "$SLOT" = "10:00" ]; then
+            echo "Dispatching for 10:00 (H: いいね③ / K: いいね③)"
+            dispatch "auto-like-hiimaru.yml"          # ひーまる いいね③
+            dispatch "auto-like-koromaru.yml"         # ころまる いいね③
+            exit 0
+          fi
+
+          # === 10:30 JST ===
+          if [ "$SLOT" = "10:30" ]; then
+            echo "Dispatching for 10:30 (H: フォロー③)"
+            dispatch "auto-follow-hiimaru.yml"        # ひーまる フォロー③
+            exit 0
+          fi
+
+          # === 11:00 JST ===
+          if [ "$SLOT" = "11:00" ]; then
+            echo "Dispatching for 11:00 (H: キッズベビー① / K: フォロー④)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる キッズベビー①
+            dispatch "auto-follow-koromaru.yml"       # ころまる フォロー④
+            exit 0
+          fi
+
+          # === 11:30 JST ===
+          if [ "$SLOT" = "11:30" ]; then
+            echo "Dispatching for 11:30 (H: フォロー④ / K: キッズベビー①)"
+            dispatch "auto-follow-hiimaru.yml"        # ひーまる フォロー④
+            dispatch "room-post-koromaru.yml"         # ころまる キッズベビー①
+            exit 0
+          fi
+
+          # === 12:00 JST ===
+          if [ "$SLOT" = "12:00" ]; then
+            echo "Dispatching for 12:00 (H: 水ソフトドリンク / K: いいね④)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる 水・ソフトドリンク
+            dispatch "auto-like-koromaru.yml"         # ころまる いいね④
+            exit 0
+          fi
+
+          # === 12:30 JST ===
+          if [ "$SLOT" = "12:30" ]; then
+            echo "Dispatching for 12:30 (H: いいね④ / K: 季節キーワード)"
+            dispatch "auto-like-hiimaru.yml"          # ひーまる いいね④
+            dispatch "room-post-koromaru-seasonal.yml"  # ころまる 季節キーワード
+            exit 0
+          fi
+
+          # === 13:00 JST ===
+          if [ "$SLOT" = "13:00" ]; then
+            echo "Dispatching for 13:00 (H: フォロー⑤ / K: フォロー⑤)"
+            dispatch "auto-follow-hiimaru.yml"        # ひーまる フォロー⑤
+            dispatch "auto-follow-koromaru.yml"       # ころまる フォロー⑤
+            exit 0
+          fi
+
+          # 13:30 / 14:00 は何もしない（スキップ）
+
+          # === 14:30 JST ===
+          if [ "$SLOT" = "14:30" ]; then
+            echo "Dispatching for 14:30 (H: いいね⑤)"
+            dispatch "auto-like-hiimaru.yml"          # ひーまる いいね⑤
+            exit 0
+          fi
+
+          # === 15:00 JST ===
+          if [ "$SLOT" = "15:00" ]; then
+            echo "Dispatching for 15:00 (H: ダイエット健康②)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる ダイエット②
+            exit 0
+          fi
+
+          # === 15:30 JST ===
+          if [ "$SLOT" = "15:30" ]; then
+            echo "Dispatching for 15:30 (K: ダイエット健康②)"
+            dispatch "room-post-koromaru.yml"         # ころまる ダイエット②
+            exit 0
+          fi
+
+          # 16:00 / 16:30 は何もしない
+
+          # === 17:00 JST ===
+          if [ "$SLOT" = "17:00" ]; then
+            echo "Dispatching for 17:00 (H: キッズベビー②)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる キッズベビー②
+            exit 0
+          fi
+
+          # === 17:30 JST ===
+          if [ "$SLOT" = "17:30" ]; then
+            echo "Dispatching for 17:30 (H: いいね⑥ / K: キッズベビー②)"
+            dispatch "auto-like-hiimaru.yml"          # ひーまる いいね⑥
+            dispatch "room-post-koromaru.yml"         # ころまる キッズベビー②
+            exit 0
+          fi
+
+          # === 18:00 JST ===
+          if [ "$SLOT" = "18:00" ]; then
+            echo "Dispatching for 18:00 (H: フォロー⑥ / K: フォロー⑥)"
+            dispatch "auto-follow-hiimaru.yml"        # ひーまる フォロー⑥
+            dispatch "auto-follow-koromaru.yml"       # ころまる フォロー⑥
+            exit 0
+          fi
+
+          # === 18:30 JST ===
+          if [ "$SLOT" = "18:30" ]; then
+            echo "Dispatching for 18:30 (K: スイーツ)"
+            dispatch "room-post-koromaru.yml"         # ころまる スイーツ
+            exit 0
+          fi
+
+          # === 19:00 JST ===
+          if [ "$SLOT" = "19:00" ]; then
+            echo "Dispatching for 19:00 (H: ジュエリー)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる ジュエリー
+            exit 0
+          fi
+
+          # === 19:30 JST ===
+          if [ "$SLOT" = "19:30" ]; then
+            echo "Dispatching for 19:30 (K: ジュエリーorバッグ)"
+            dispatch "room-post-koromaru.yml"         # ころまる ジュエリーorバッグ
+            exit 0
+          fi
+
+          # === 20:00 JST ===
+          if [ "$SLOT" = "20:00" ]; then
+            echo "Dispatching for 20:00 (H: レディースファッション)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる レディースファッション
+            exit 0
+          fi
+
+          # === 20:30 JST ===
+          if [ "$SLOT" = "20:30" ]; then
+            echo "Dispatching for 20:30 (K: ペット)"
+            dispatch "room-post-koromaru.yml"         # ころまる ペット
+            exit 0
+          fi
+
+          # === 21:00 JST ===
+          if [ "$SLOT" = "21:00" ]; then
+            echo "Dispatching for 21:00 (H: バッグ / K: いいね⑤)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる バッグ
+            dispatch "auto-like-koromaru.yml"         # ころまる いいね⑤
+            exit 0
+          fi
+
+          # === 21:30 JST ===
+          if [ "$SLOT" = "21:30" ]; then
+            echo "Dispatching for 21:30 (K: インナー下着)"
+            dispatch "room-post-koromaru.yml"         # ころまる インナー下着
+            exit 0
+          fi
+
+          # === 22:00 JST ===
+          if [ "$SLOT" = "22:00" ]; then
+            echo "Dispatching for 22:00 (H: 美容コスメ② / K: いいね⑥)"
+            dispatch "room-post-hiimaru.yml"          # ひーまる 美容コスメ②
+            dispatch "auto-like-koromaru.yml"         # ころまる いいね⑥
+            exit 0
+          fi
+
+          # === 22:30 JST ===
+          if [ "$SLOT" = "22:30" ]; then
+            echo "Dispatching for 22:30 (K: 美容コスメ②)"
+            dispatch "room-post-koromaru.yml"         # ころまる 美容コスメ②
+            exit 0
+          fi
+
           echo "No job for slot $SLOT"
   
