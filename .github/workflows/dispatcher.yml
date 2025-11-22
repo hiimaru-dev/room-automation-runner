@@ -146,8 +146,8 @@ jobs:
 
           # === 10:00 JST ===
           if [ "$SLOT" = "10:00" ]; then
-            echo "Dispatching for 10:00 (H: いいね③ / K: いいね③)"
-            dispatch "auto-like-hiimaru.yml"
+            echo "Dispatching for 10:00 (H: AIキーワード投稿 / K: いいね③)"
+            dispatch "room-post-hiimaru.yml" "HI_KEYWORD_BEAUTY"  # ひーまる AIキーワード投稿
             dispatch "auto-like-koromaru.yml"
             exit 0
           fi
@@ -185,7 +185,7 @@ jobs:
 
           # === 12:30 JST ===
           if [ "$SLOT" = "12:30" ]; then
-            echo "Dispatching for 12:30 (H: いいね④ / K: 季節キーワード)"
+            echo "Dispatching for 12:30 (H: いいね③ / K: 季節キーワード)"
             dispatch "auto-like-hiimaru.yml"
             dispatch "room-post-koromaru-seasonal.yml"   # POST_SLOT なし
             exit 0
@@ -199,7 +199,14 @@ jobs:
             exit 0
           fi
 
-          # 13:30 / 14:00 は何もしない
+          # === 13:30 JST ===
+          if [ "$SLOT" = "13:30" ]; then
+            echo "Dispatching for 13:30 (H: いいね④)"
+            dispatch "auto-like-hiimaru.yml"
+            exit 0
+          fi
+
+          # 14:00 は何もしない
 
           # === 14:30 JST ===
           if [ "$SLOT" = "14:30" ]; then
