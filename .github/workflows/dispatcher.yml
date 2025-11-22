@@ -229,7 +229,19 @@ jobs:
             exit 0
           fi
 
-          # 16:00 / 16:30 は何もしない
+          # === 16:00 JST ===
+          if [ "$SLOT" = "16:00" ]; then
+            echo "Dispatching for 16:00 (H: AIダイエットキーワード投稿)"
+            dispatch "room-post-hiimaru.yml" "HI_KEYWORD_DIET"
+            exit 0
+          fi
+
+          # === 16:30 JST ===
+          if [ "$SLOT" = "16:30" ]; then
+            echo "Dispatching for 16:30 (H: AIトレンドキーワード投稿)"
+            dispatch "room-post-hiimaru.yml" "HI_KEYWORD_TREND"
+            exit 0
+          fi
 
           # === 17:00 JST ===
           if [ "$SLOT" = "17:00" ]; then
