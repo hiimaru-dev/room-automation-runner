@@ -1,8 +1,12 @@
 name: dispatcher
 
 on:
-  # cron-job.org から叩くのはこれだけ
   workflow_dispatch:
+  repository_dispatch:
+
+permissions:
+  actions: write
+  contents: read
 
 jobs:
   compute-time-slot:
