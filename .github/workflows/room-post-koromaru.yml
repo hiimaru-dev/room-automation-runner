@@ -6,29 +6,11 @@ concurrency:
 
 on:
   workflow_dispatch:
-  # schedule:
-    # 07:30 JST 美容コスメ①
-    # - cron: '30 22 * * *'
-    # 08:30 JST ダイエット健康①
-    # - cron: '30 23 * * *'
-    # 09:30 JST レディースファッション
-    # - cron: '30 0 * * *'
-    # 11:30 JST キッズベビー①
-    # - cron: '30 2 * * *'
-    # 15:30 JST ダイエット健康②
-    # - cron: '30 6 * * *'
-    # 17:30 JST キッズベビー②
-    # - cron: '30 8 * * *'
-    # 18:30 JST 美容コスメ②
-    # - cron: '30 9 * * *'
-    # 19:30 JST ジュエリー or バッグ
-    # - cron: '30 10 * * *'
-    # 20:30 JST ペット
-    # - cron: '30 11 * * *'
-    # 22:30 JST スイーツ
-    # - cron: '30 13 * * *'
-    # 23:30 JST インナー下着
-    # - cron: '30 14 * * *'
+    inputs:
+      POST_SLOT:
+        description: "Posting slot key (例: KO_BEAUTY / KO_DIET / KO_KIDS ...)"
+        required: false
+        default: ""
 
 jobs:
   run-room-post:
@@ -86,9 +68,11 @@ jobs:
           cd room-automation
           npx puppeteer browsers install chrome
           
-      - name: Run room-post (koromaru / time-based genre)
+      - name: Run room-post (koromaru / slot-based genre)
         run: |
           cd room-automation
+
+          echo "POST_SLOT from workflow_dispatch = '${POST_SLOT}'"
 
           set +e
           npx ts-node -r dotenv/config src/services/room-post/index.ts
@@ -103,7 +87,7 @@ jobs:
         env:
           NODE_ENV: production
           DOTENV_CONFIG_PATH: .env.koromaru
-          ROOM_TIME_CRON: ${{ github.event.schedule }}  # ★追加
+          POST_SLOT: ${{ github.event.inputs.POST_SLOT }}
 
       - name: Commit & push JSON logs
         run: |
