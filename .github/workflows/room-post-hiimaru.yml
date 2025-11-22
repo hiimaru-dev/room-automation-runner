@@ -6,31 +6,11 @@ concurrency:
   
 on:
   workflow_dispatch:
-  # schedule:
-    # 07:00 JST 美容コスメ①（第1波）
-    # - cron: '0 22 * * *'
-    # 08:00 JST ダイエット健康①
-    # - cron: '0 23 * * *'
-    # 09:00 JST インナー下着
-    # - cron: '0 0 * * *'
-    # 11:00 JST キッズベビー①
-    # - cron: '0 2 * * *'
-    # 12:00 JST 水ソフトドリンク
-    # - cron: '0 3 * * *'
-    # 13:00 JST 美容コスメ①（第2波）
-    # - cron: '0 4 * * *'
-    # 15:00 JST ダイエット健康②
-    # - cron: '0 6 * * *'
-    # 17:00 JST キッズベビー②
-    # - cron: '0 8 * * *'
-    # 19:00 JST ジュエリー
-    # - cron: '0 10 * * *'
-    # 20:00 JST レディースファッション
-    # - cron: '0 11 * * *'
-    # 21:00 JST バッグ
-    # - cron: '0 12 * * *'
-    # 22:00 JST 美容コスメ②
-    # - cron: '0 13 * * *'
+    inputs:
+      POST_SLOT:
+        description: "Posting slot key (例: HI_BEAUTY / HI_DIET / HI_INNER ...)"
+        required: false
+        default: ""
 
 jobs:
   run-room-post:
@@ -96,10 +76,12 @@ jobs:
             npm install
           fi
           
-      # 6) room-post を実行（ひーまる / 時間ベースでジャンル決定）
-      - name: Run room-post (hiimaru / time-based genre)
+      # 6) room-post を実行（ひーまる / POST_SLOT ベースでジャンル決定）
+      - name: Run room-post (hiimaru / slot-based genre)
         run: |
           cd room-automation
+
+          echo "POST_SLOT from workflow_dispatch = '${POST_SLOT}'"
 
           # エラーでも一旦止めない
           set +e
@@ -116,7 +98,7 @@ jobs:
         env:
           NODE_ENV: production
           DOTENV_CONFIG_PATH: .env.hiimaru
-          ROOM_TIME_CRON: ${{ github.event.schedule }}  # ★追加
+          POST_SLOT: ${{ github.event.inputs.POST_SLOT }}
 
       # 7) 実行後に JSON ログだけを private repo に commit & push
       - name: Commit & push JSON logs
