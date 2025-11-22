@@ -1,0 +1,66 @@
+name: generate-daily-keywords
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-keyword-generation:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout runner repo
+        uses: actions/checkout@v4
+
+      - name: Clone room-automation
+        run: |
+          git clone https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: room-automation/package-lock.json
+
+      - name: Install deps
+        run: |
+          cd room-automation
+          if [ -d node_modules ]; then
+            echo "✅ node_modules cache found → npm install スキップ"
+          else
+            echo "⬇️ node_modules cache なし → npm install 実行"
+            npm install
+          fi
+
+      - name: Run generateDailyKeywords
+        run: |
+          cd room-automation
+          npx ts-node src/services/room-post/generateDailyKeywords.ts
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+      - name: Commit & push daily_keywords.json
+        run: |
+          cd room-automation
+
+          git remote set-url origin https://x-access-token:${GH_PAT}@github.com/hiimaru-dev/room-automation.git
+
+          if [ -f src/services/room-post/data/daily_keywords.json ]; then
+            git add src/services/room-post/data/daily_keywords.json
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No keyword changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+
+          git commit -m "chore: update daily AI keywords" || exit 0
+
+          git push origin HEAD:main
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
