@@ -73,6 +73,13 @@ jobs:
               "https://api.github.com/repos/$REPO/actions/workflows/${workflow_file}/dispatches"
           }
 
+          # === 5:00 JST ===
+          if [ "$SLOT" = "5:00" ]; then
+            echo "Dispatching for 5:00 (AIキーワード生成)"
+            dispatch "generate-daily-keywords.yml"
+            exit 0
+          fi
+
           # === 6:00 JST ===
           if [ "$SLOT" = "6:00" ]; then
             echo "Dispatching for 6:00 (H: Xポスト / K: フォロー①)"
