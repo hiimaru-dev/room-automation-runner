@@ -16,6 +16,8 @@ jobs:
   run-x-beauty-post:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    env:
+      TZ: Asia/Tokyo  # ←★ これを追加
 
     steps:
       # 1) runner リポをチェックアウト
