@@ -117,7 +117,25 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
 
-          git commit -m "chore: update x-beauty-post json logs (hiimaru)"
-          git push origin main
+          git commit -m "chore: update x-beauty-post json logs (hiimaru)" || exit 0
+
+          # 🔄 pull --rebase ＋ push（最大3回リトライ）
+          for i in 1 2 3; do
+            echo "Attempt #$i: pull --rebase & push..."
+
+            # 途中で別の push があっても、とりあえず最新を取り込む
+            git pull --rebase origin main || true
+
+            if git push origin HEAD:main; then
+              echo "✅ Push success."
+              exit 0
+            fi
+
+            echo "⚠️ Push failed. Retry after 5 seconds..."
+            sleep 5
+          done
+
+          echo "❌ Failed to push after 3 attempts."
+          exit 1
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
