@@ -119,12 +119,12 @@ jobs:
             git add -f session/posted-koromaru.json
           fi
 
-          # 🔐 暗号化クッキー（hiimaru / koromaru 共通で拾う）
+          # encrypted cookies
           if ls session/rakuten_cookie_*.enc >/dev/null 2>&1; then
             git add -f session/rakuten_cookie_*.enc
           fi
 
-          # 何も変化がなければ終わり
+          # nothing to commit
           if git diff --cached --quiet; then
             echo "No JSON changes to commit."
             exit 0
@@ -133,7 +133,23 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
 
-          git commit -m "chore: update runtime json logs (koromaru seasonal)"
-          git push origin main
+          git commit -m "chore: update runtime json logs (koromaru seasonal)" || exit 0
+
+          # 🔄 pull --rebase ＋ push（3回リトライ）
+          for i in 1 2 3; do
+            echo "Attempt #$i: pull --rebase & push..."
+            git pull --rebase origin main || true
+
+            if git push origin HEAD:main; then
+              echo "✅ Push success."
+              exit 0
+            fi
+
+            echo "⚠️ Push failed. Retry after 5 seconds..."
+            sleep 5
+          done
+
+          echo "❌ Failed to push after 3 attempts."
+          exit 1
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
